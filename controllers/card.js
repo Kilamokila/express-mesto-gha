@@ -40,7 +40,7 @@ exports.deleteCard = async (req, res) => {
 
 exports.deleteCardLike = async (req, res) => {
   try {
-    const { cardId } = req.user._id;
+    const { cardId } = req.params;
     const card = await Card.findById(cardId);
     if (card) {
       await Card.findByIdAndUpdate(
@@ -62,7 +62,7 @@ exports.deleteCardLike = async (req, res) => {
 
 exports.putCardLike = async (req, res) => {
   try {
-    const { cardId } = req.user._id;
+    const { cardId } = req.params;
     const card = await Card.findById(cardId);
     if (card) {
       await Card.findByIdAndUpdate(
