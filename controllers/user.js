@@ -20,12 +20,12 @@ exports.updateUserInfo = (req, res) => {
   if (!name || !about) {
     return res.status(400).send({ message: 'Поля "name" и "about" должно быть заполнены' });
   }
-  User.findByIdAndUpdate(userId, { name, about }, {
+  return User.findByIdAndUpdate(userId, { name, about }, {
     new: true,
     runValidators: true,
     upsert: false,
   })
-    .then(res.status(201))
+    .then(res.status(200))
     .then((newUserInfo) => res.send({ data: newUserInfo }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
@@ -42,12 +42,12 @@ exports.updateUserAvatar = (req, res) => {
   if (!avatar) {
     return res.status(400).send({ message: 'Поле "avatar" должно быть заполнено' });
   }
-  User.findByIdAndUpdate(userId, { avatar }, {
+  return User.findByIdAndUpdate(userId, { avatar }, {
     new: true,
     runValidators: true,
     upsert: false,
   })
-    .then(res.status(201))
+    .then(res.status(200))
     .then((newUserAvatar) => res.send({ data: newUserAvatar }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
@@ -76,7 +76,8 @@ exports.getUserById = async (req, res) => {
   } catch (err) {
     if (err.name === 'CastError') {
       res.status(400).send({ message: 'Некорректные данные' });
+    } else {
+      res.status(500).send({ message: err.message });
     }
-    res.status(500).send({ message: err.message });
   }
 };

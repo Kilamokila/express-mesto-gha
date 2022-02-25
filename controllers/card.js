@@ -8,8 +8,9 @@ exports.addCard = (req, res) => {
     .catch((err) => {
       if (err.name === 'ValidationError') {
         res.status(400).send({ message: 'Некорректные данные' });
+      } else {
+        res.status(500).send({ message: err.message });
       }
-      res.status(500).send({ message: err.message });
     });
 };
 
@@ -33,8 +34,9 @@ exports.deleteCard = async (req, res) => {
   } catch (err) {
     if (err.name === 'CastError') {
       res.status(400).send({ message: 'Невалидный id ' });
+    } else {
+      res.status(500).send({ message: err.message });
     }
-    res.status(500).send({ message: err.message });
   }
 };
 
@@ -55,8 +57,9 @@ exports.deleteCardLike = async (req, res) => {
   } catch (err) {
     if (err.name === 'CastError') {
       res.status(400).send({ message: 'Невалидный id ' });
+    } else {
+      res.status(500).send({ message: err.message });
     }
-    res.status(500).send({ message: err.message });
   }
 };
 
@@ -70,14 +73,15 @@ exports.putCardLike = async (req, res) => {
         { $pull: { likes: req.user._id } },
         { new: true },
       );
-      res.status(200).send(cardId);
+      res.status(200).send(card);
     } else {
       res.status(404).send({ message: `Карточка с id: ${cardId} не обнаружена на сервере ` });
     }
   } catch (err) {
     if (err.name === 'CastError') {
       res.status(400).send({ message: 'Невалидный id ' });
+    } else {
+      res.status(500).send({ message: err.message });
     }
-    res.status(500).send({ message: err.message });
   }
 };
