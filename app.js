@@ -1,7 +1,18 @@
 const express = require('express');
+const { celebrate, errors } = require('celebrate');
+const cookieParser = require('cookie-parser');
 const mongoose = require('mongoose');
+require('dotenv').config();
 const { userRouter } = require('./routes/user');
 const { cardRouter } = require('./routes/card');
+const { login } = require('./controllers/login');
+const { createUser } = require('./controllers/createUser');
+const { auth } = require('./middlewares/auth');
+const { errorHandler } = require('./middlewares/errorHandler');
+const NotFoundError = require('./errors/NotFoundError');
+const { joiSignInScheme, joiSignUpScheme } = require('./utils/validator');
+
+const { PORT = 3000 } = process.env;
 
 const app = express();
 
@@ -10,20 +21,16 @@ mongoose.connect('mongodb://localhost:27017/mestodb ', {
   useUnifiedTopology: true,
 });
 
-app.use((req, res, next) => {
-  req.user = {
-    _id: '620b670d2a2d723043cb0b18',
-  };
-  next();
+app.use(cookieParser());
+app.post('/signin', express.json(), celebrate(joiSignInScheme), login);
+app.post('/signup', express.json(), celebrate(joiSignUpScheme), createUser);
+app.use('/users', auth, userRouter);
+app.use('/cards', auth, cardRouter);
+app.use('*', (req, res, next) => {
+  next(new NotFoundError('Такой страницы не существует'));
 });
-
-app.use('/users', userRouter);
-app.use('/cards', cardRouter);
-app.use('*', (req, res) => {
-  res.status(404).send({ message: 'Страницы не существует' });
-});
-
-const { PORT = 3000 } = process.env;
+app.use(errors());
+app.use(errorHandler);
 
 app.listen(PORT, () => {
   console.log(`App listening on port ${PORT}`);
