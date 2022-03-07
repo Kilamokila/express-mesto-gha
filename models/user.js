@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
-const { regexpression } = require('../utils/validator');
+const validator = require('validator');
 
 const userSchema = new mongoose.Schema({
   name: {
@@ -23,7 +23,7 @@ const userSchema = new mongoose.Schema({
     required: false,
     validate: {
       validator(v) {
-        return regexpression.test(v);
+        return validator.isURL(v);
       },
       message: 'ссылка не валидна',
     },
@@ -32,6 +32,11 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
     unique: true,
+    validae: {
+      validator(v) {
+        return validator.isEmail(v);
+      },
+    },
   },
   password: {
     type: String,
@@ -42,7 +47,7 @@ const userSchema = new mongoose.Schema({
 });
 
 userSchema.statics.findUserByCredentials = function (email, password) {
-  return this.findOne({ email }.select('+password'))
+  return this.findOne({ email }).select('+password')
     .then((user) => {
       if (!user) {
         return Promise.reject(new Error('Неверный пароль или адрес электронной почты'));

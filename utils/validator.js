@@ -3,8 +3,6 @@ const validator = require('validator');
 const { ObjectId } = require('mongoose').Types;
 const BadRequestError = require('../errors/BadRequestError');
 
-exports.regexpression = /(|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-/]))?/;
-
 exports.joiCardScheme = {
   body: Joi.object().keys({
     name: Joi.string().required().min(2).max(30),

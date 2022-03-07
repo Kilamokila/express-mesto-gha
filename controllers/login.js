@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
+const AuthError = require('../errors/AuthError');
 
 const { NODE_ENV, JWT_SECRET } = process.env;
 
@@ -12,9 +13,9 @@ const login = (req, res, next) => {
         maxAge: 3600000,
         httpOnly: true,
         sameSite: true,
-      }).end();
+      }).send('Вход выполнен');
     })
-    .catch(next);
+    .catch(next(new AuthError('Ошибка входа')));
 };
 
 module.exports = { login };

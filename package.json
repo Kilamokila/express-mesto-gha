@@ -1,7 +1,7 @@
 {
   "name": "server-for-practise",
   "version": "1.0.0",
-  "description": "",
+  "description": "backend for mesto project",
   "main": "index.js",
   "scripts": {
     "start": "node app.js",
@@ -9,7 +9,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "npx eslint ."
   },
-  "author": "",
+  "author": "Danny",
   "license": "ISC",
   "devDependencies": {
     "eslint": "^8.9.0",

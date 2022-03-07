@@ -6,7 +6,7 @@ const BadRequestError = require('../errors/BadRequestError');
 
 exports.addCard = (req, res, next) => {
   const { name, link } = req.body;
-  Card.create({ name, link, owner: req.user })
+  Card.create({ name, link, owner: req.user._id })
     .then(res.status(201))
     .then((card) => res.send({ data: card }))
     .catch((err) => {
@@ -28,17 +28,17 @@ exports.getCards = (req, res, next) => {
 exports.deleteCard = async (req, res, next) => {
   try {
     const { cardId } = req.params;
-    const { owner } = req.body;
+    const { owner } = req.user._id;
     const card = await Card.findById(cardId);
     if (!card) {
-      next(new NotFoundError(`Карточка с id: ${cardId} не обнаружена на сервере`));
+      return next(new NotFoundError(`Карточка с id: ${cardId} не обнаружена на сервере`));
     }
-    if (owner !== req.user) {
-      next(new ForbiddenError('Чужую карточку удалить невозможно.'));
+    if (!card.owner.equals(req.user._id)) {
+      return next(new ForbiddenError('Чужую карточку удалить невозможно.'));
     }
     const removedCard = await Card.findByIdAndRemove(cardId);
     if (!removedCard) {
-      next(new NotFoundError('Передан неверный айди карточки, поэтому не получилось удалить.'));
+      return next(new NotFoundError('Передан неверный айди карточки, поэтому не получилось удалить.'));
     }
     res.send(removedCard);
   } catch (err) {

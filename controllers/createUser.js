@@ -1,4 +1,3 @@
-const validator = require('validator');
 const bcrypt = require('bcryptjs');
 const User = require('../models/user');
 const BadRequestError = require('../errors/BadRequestError');
@@ -8,15 +7,16 @@ const createUser = (req, res, next) => {
   const {
     name, about, avatar, email, password,
   } = req.body;
-  if (!validator.isEmail(email)) {
-    next(new BadRequestError('Некорректные данные'));
-  }
   return bcrypt.hash(password, 10)
     .then((hash) => User.create({
       name, about, avatar, email, password: hash,
     }))
     .then(res.status(201))
-    .then((user) => res.send({ data: user }))
+    .then((user) => res.send({
+      data: {
+        name, about, avatar, email,
+      },
+    }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
         next(new BadRequestError('Некорректные данные'));

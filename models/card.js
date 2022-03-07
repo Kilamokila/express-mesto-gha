@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const { regexpression } = require('../utils/validator');
+const validator = require('validator');
 
 const cardSchema = new mongoose.Schema({
   name: {
@@ -13,7 +13,7 @@ const cardSchema = new mongoose.Schema({
     required: true,
     validate: {
       validator(v) {
-        return regexpression.test(v);
+        return validator.isURL(v);
       },
       message: 'ссылка не валидна',
     },

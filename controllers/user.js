@@ -7,9 +7,6 @@ const AuthError = require('../errors/AuthError');
 exports.updateUserInfo = (req, res, next) => {
   const userId = req.user._id;
   const { name, about } = req.body;
-  if (!name || !about) {
-    next(new BadRequestError('Поля "name" и "about" должно быть заполнены'));
-  }
   return User.findByIdAndUpdate(userId, { name, about }, {
     new: true,
     runValidators: true,
@@ -29,9 +26,6 @@ exports.updateUserInfo = (req, res, next) => {
 exports.updateUserAvatar = (req, res, next) => {
   const userId = req.user._id;
   const { avatar } = req.body;
-  if (!avatar) {
-    next(new BadRequestError('Поле "avatar" должно быть заполнено'));
-  }
   return User.findByIdAndUpdate(userId, { avatar }, {
     new: true,
     runValidators: true,

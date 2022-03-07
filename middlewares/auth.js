@@ -1,12 +1,12 @@
 const jwt = require('jsonwebtoken');
-const AuthError = require('./errorHandler');
+const AuthError = require('../errors/AuthError');
 
-const { JWT_SECRET } = process.env;
+const { JWT_SECRET = 'dev-secret' } = process.env;
 
 const auth = (req, res, next) => {
   const cookieToken = req.cookies.userToken;
   if (!cookieToken) {
-    next(new AuthError('Необходима авторизация'));
+    return next(new AuthError('Необходима авторизация'));
   }
   let payload;
   try {
