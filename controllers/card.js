@@ -25,10 +25,10 @@ exports.getCards = (req, res, next) => {
     .catch(next);
 };
 
+// eslint-disable-next-line consistent-return
 exports.deleteCard = async (req, res, next) => {
   try {
     const { cardId } = req.params;
-    const { owner } = req.user._id;
     const card = await Card.findById(cardId);
     if (!card) {
       return next(new NotFoundError(`Карточка с id: ${cardId} не обнаружена на сервере`));

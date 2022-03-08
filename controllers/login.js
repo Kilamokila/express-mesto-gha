@@ -13,9 +13,9 @@ const login = (req, res, next) => {
         maxAge: 3600000,
         httpOnly: true,
         sameSite: true,
-      }).send('Вход выполнен');
+      }).send({ message: 'Вход выполнен' });
     })
-    .catch(next(new AuthError('Ошибка входа')));
+    .catch(() => next(new AuthError('Ошибка входа')));
 };
 
 module.exports = { login };
